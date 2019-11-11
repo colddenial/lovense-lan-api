@@ -1,0 +1,6 @@
+*~
+*.link
+build/
+target/
+dependency-reduced-pom.xml
+.gradle
