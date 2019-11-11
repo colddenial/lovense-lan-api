@@ -10,12 +10,12 @@ Iterator<LovenseToy> toyIterator = toys.iterator();
 while(toyIterator.hasNext())
 {
     LovenseToy nextToy = toyIterator.next();
-	System.err.println("  Instance: " + nextToy.toString());
+    System.err.println("  Instance: " + nextToy.toString());
     System.err.println("  Nickname: " + nextToy.getNickname());
     System.err.println("  Name: " + nextToy.getName());
     System.err.println("  id: " + nextToy.getId());
     System.err.println("  Battery:" + String.valueOf(nextToy.getBattery()));
-	nextToy.vibrate(10); // Set toy to 50% vibration (0-20)
+    nextToy.vibrate(10); // Set toy to 50% vibration (0-20)
 }
 ```
 
