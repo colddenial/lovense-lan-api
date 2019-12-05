@@ -165,9 +165,13 @@ public class LovenseConnectDevice implements Runnable
                 else
                     lt.nickname = nn;
             }
-            if (toyObj.has("battery"))
-                lt.battery = toyObj.optInt("battery", 0);
             lt.connected = (toyObj.optInt("status", 0) == 1);
+            if (toyObj.has("battery"))
+            {
+                lt.battery = toyObj.optInt("battery", 0);
+            } else {
+                this.command(lt, "Battery");
+            }
         }
 
         // Remove any toys that have been disconnected
@@ -240,12 +244,20 @@ public class LovenseConnectDevice implements Runnable
     
     protected synchronized void queueCommand(LovenseToyCommand ltc)
     {
-        try
+        if (ltc.getToy().isConnected())
         {
-            this.commandQueue.removeIf(n -> (ltc.commandEquals(n)));
-            this.commandQueue.put(ltc);
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
+            try
+            {
+                this.commandQueue.removeIf(n -> (ltc.commandEquals(n)));
+                this.commandQueue.put(ltc);
+            } catch (Exception e) {
+                e.printStackTrace(System.err);
+            }
+        } else {
+            if (LovenseConnect.debug)
+            {
+                System.err.println("Command Ignored: " + ltc.toString() + " Toy not connected!");
+            }
         }
     }
 

@@ -45,6 +45,11 @@ public class LovenseToyCommand
         return this.toy.getId();
     }
     
+    public LovenseToy getToy()
+    {
+        return this.toy;
+    }
+    
     public String getCommand()
     {
         return this.command;
@@ -62,10 +67,10 @@ public class LovenseToyCommand
     
     protected void setResponse(int code, JSONObject data)
     {
-        if (code == 200 && this.params != null)
+        if (code == 200)
         {
             String toyType = toy.getName();
-            if ("Vibrate".equals(this.command))
+            if ("Vibrate".equals(this.command) && this.params != null)
             {
                 int vibrate_value = Integer.valueOf(this.params.get("v")).intValue();
                 this.toy.output1_value = vibrate_value;
@@ -73,12 +78,13 @@ public class LovenseToyCommand
                 { 
                     this.toy.output2_value = vibrate_value;
                 }
-            } else if ("Vibrate1".equals(this.command)) {
+            } else if ("Vibrate1".equals(this.command) && this.params != null) {
                 this.toy.output1_value = Integer.valueOf(this.params.get("v")).intValue();
-            } else if ("Vibrate2".equals(this.command)) {
+            } else if ("Vibrate2".equals(this.command) && this.params != null) {
                 this.toy.output2_value = Integer.valueOf(this.params.get("v")).intValue();
             } else if ("Rotate".equals(this.command) || "RotateAntiClockwise".equals(this.command) || "RotateClockwise".equals(this.command)) {
-                this.toy.output2_value = Integer.valueOf(this.params.get("v")).intValue();
+                if (this.params != null)
+                    this.toy.output2_value = Integer.valueOf(this.params.get("v")).intValue();
             } else if ("Battery".equals(this.command)) {
                 this.toy.battery = data.optInt("data",0);
             }
@@ -125,12 +131,10 @@ public class LovenseToyCommand
             if (this.command.equals(ltc.getCommand()) && this.getToyId().equalsIgnoreCase(ltc.getToyId()))
             {
                 boolean param_match = false;
-                if (this.params != null)
+                if (this.params != null && ltc.getParameters() != null)
                 {
                     if (this.params.equals(ltc.getParameters()))
                         param_match = true;
-                } else if (ltc.getParameters() == null) {
-                    param_match = true;
                 }
                 return param_match;
             } else {
