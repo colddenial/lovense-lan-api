@@ -39,7 +39,7 @@ public class LovenseConnectDevice implements Runnable
         this.toys = new Hashtable<String, LovenseToy>();
         this.appVersion = j.optString("appVersion", "unknown");
         this.ipAddress = j.optString("domain", "").replaceAll(".lovense.club", "").replaceAll("-",".");
-        this.httpPort = j.optInt("httpPort", 0);
+        this.httpPort = j.optInt("httpsPort", 0);
         this.deviceId = j.optString("deviceId", (this.ipAddress + ":" + String.valueOf(this.httpPort)));
         hostnameLookup();
         if (j.has("toys"))
@@ -214,7 +214,7 @@ public class LovenseConnectDevice implements Runnable
 
     private String getHTTPPath()
     {
-        return "http://" + this.getIPAddress() + ":" + String.valueOf(this.getHTTPPort()) + "/";
+        return "https://" + this.getIPAddress() + ":" + String.valueOf(this.getHTTPPort()) + "/";
     }
 
     protected JSONObject getToyJSON(String toyId)

@@ -6,6 +6,9 @@ import java.net.URLEncoder;
 import java.net.URLDecoder;
 import java.net.URL;
 import java.net.HttpURLConnection;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
 
 import java.util.Vector;
 import java.util.Collection;
@@ -102,13 +105,17 @@ public class LovenseConnect
                 String key = keys.next();
                 if (LovenseConnect.devices.containsKey(key))
                 {
+                    
+                    // commented out to focus on directly asking device
+                    /*
+
                     LovenseConnectDevice ld = LovenseConnect.devices.get(key);
                     JSONObject dev_json = resp.getJSONObject(key);
                     if (dev_json.has("toys"))
                     {
                         JSONObject toys_json = dev_json.getJSONObject("toys");
                         ld.updateToysJSON(toys_json);
-                    }
+                    }*/
                 } else {
                     JSONObject dev_json = resp.getJSONObject(key);
                     LovenseConnectDevice ld = new LovenseConnectDevice(dev_json);
@@ -131,8 +138,7 @@ public class LovenseConnect
         while(manDevIt.hasNext())
         {
             LovenseConnectDevice ld = manDevIt.next();
-            if (ld.isManualDevice())
-                ld.refresh();
+            ld.refresh();
             updatedToys.addAll(ld.getToys());
         }
 
@@ -299,10 +305,16 @@ public class LovenseConnect
             }
             String return_data = "";
             URL url_object = new URL(url);
-            HttpURLConnection con = (HttpURLConnection) url_object.openConnection();
+            HttpsURLConnection con = (HttpsURLConnection) url_object.openConnection();
             con.setConnectTimeout(3000);
             con.setReadTimeout(3000);
             con.setRequestMethod("GET");
+            con.setHostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String hostname, SSLSession sslSession) {
+                    return true;
+                }
+            });
             con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36");
             con.connect();
             int response_code = con.getResponseCode();
