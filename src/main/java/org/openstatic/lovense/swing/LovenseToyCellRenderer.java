@@ -76,7 +76,7 @@ public class LovenseToyCellRenderer extends JPanel implements ListCellRenderer<L
         {
           try
           {
-              BufferedImage res_icon = ImageIO.read(getClass().getResource("/" + toy_name + ".png"));
+              BufferedImage res_icon = ImageIO.read(getClass().getResource("/lovense-res/" + toy_name + ".png"));
               BufferedImage bi = resizeImage(64, res_icon);
               this.icon_cache.put(toy_name, bi);
           } catch (Exception e) {}
