@@ -1,25 +1,36 @@
-#Lovense LAN Library
+# Lovense LAN Library #
 
 This library provides a simple interface to control lovense toys using lovense connect.
 
 Example
 
-```
-Collection<LovenseToy> toys = LovenseConnect.getToys();
-Iterator<LovenseToy> toyIterator = toys.iterator();
-while(toyIterator.hasNext())
+```java
+public class Test
 {
-    LovenseToy nextToy = toyIterator.next();
-    System.err.println("  Instance: " + nextToy.toString());
-    System.err.println("  Nickname: " + nextToy.getNickname());
-    System.err.println("  Name: " + nextToy.getName());
-    System.err.println("  id: " + nextToy.getId());
-    System.err.println("  Battery:" + String.valueOf(nextToy.getBattery()));
-    nextToy.vibrate(10); // Set toy to 50% vibration (0-20)
+	public static void main(String[] args)
+	{
+		Collection<LovenseToy> toys = LovenseConnect.getToys();
+		Iterator<LovenseToy> toyIterator = toys.iterator();
+		while(toyIterator.hasNext())
+		{
+		    LovenseToy nextToy = toyIterator.next();
+		    System.err.println("  Instance: " + nextToy.toString());
+		    System.err.println("  Nickname: " + nextToy.getNickname());
+		    System.err.println("  Name: " + nextToy.getName());
+		    System.err.println("  id: " + nextToy.getId());
+		    System.err.println("  Battery:" + String.valueOf(nextToy.getBattery()));
+		    nextToy.vibrate(10); // Set toy to 50% vibration (0-20)
+		}
+	}
 }
 ```
 
->Copyright (C) 2019  colddenial
+Every call to getToys() also runs LovenseConnect.refreshIfNeeded() this will look for new devices using lovense's getToys API. 
+
+
+
+
+>Copyright (C) 2019  colddenial / openstatic.org
 
 >This program is free software: you can redistribute it and/or modify
 >it under the terms of the GNU General Public License as published by

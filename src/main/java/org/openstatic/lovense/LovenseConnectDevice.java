@@ -12,13 +12,19 @@ import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+/** This class represents a device running Lovense Connect, this can be your phone or computer with the dongle provided by lovense.
+ *  this class may also be ignored entirely! It's mostly used internally as a thread container for each device. This class also
+ *  Manages it's collection of toys to report to the main library. It should never be instantiated outside the LovenseConnect class.
+ * 
+ * **/
+
 public class LovenseConnectDevice implements Runnable
 {
     private JSONObject toysJson;
     private Hashtable<String, LovenseToy> toys;
     private String hostname;
     private String ipAddress;
-    private int httpPort;
+    private int httpsPort;
     private Thread hostLookupThread;
     private Thread commandHandler;
     private boolean keep_running;
@@ -27,8 +33,6 @@ public class LovenseConnectDevice implements Runnable
     private String deviceId;
     private LinkedBlockingQueue<LovenseToyCommand> commandQueue;
 
-    /** This constructor should be ignored for the most part, accounts should
-     * always be fetched by the BSDClient class*/
     protected LovenseConnectDevice(JSONObject j)
     {
         this.keep_running = true;
@@ -39,8 +43,8 @@ public class LovenseConnectDevice implements Runnable
         this.toys = new Hashtable<String, LovenseToy>();
         this.appVersion = j.optString("appVersion", "unknown");
         this.ipAddress = j.optString("domain", "").replaceAll(".lovense.club", "").replaceAll("-",".");
-        this.httpPort = j.optInt("httpsPort", 0);
-        this.deviceId = j.optString("deviceId", (this.ipAddress + ":" + String.valueOf(this.httpPort)));
+        this.httpsPort = j.optInt("httpsPort", 0);
+        this.deviceId = j.optString("deviceId", (this.ipAddress + ":" + String.valueOf(this.httpsPort)));
         hostnameLookup();
         if (j.has("toys"))
         {
@@ -62,7 +66,7 @@ public class LovenseConnectDevice implements Runnable
         this.appVersion = "unknown";
         this.deviceId = ip + ":" + String.valueOf(port);
         this.ipAddress = ip;
-        this.httpPort = port;
+        this.httpsPort = port;
         hostnameLookup();
         this.refresh();
     }
@@ -117,7 +121,7 @@ public class LovenseConnectDevice implements Runnable
     {
         try
         {
-            String url = this.getHTTPPath() + "GetToys";
+            String url = this.getHTTPSPath() + "GetToys";
             JSONObject response = LovenseConnect.apiCall(url, null);
             int response_code = 0;
             if (response != null)
@@ -201,9 +205,9 @@ public class LovenseConnectDevice implements Runnable
         return this.hostname;
     }
 
-    public int getHTTPPort()
+    public int getHTTPSPort()
     {
-        return this.httpPort;
+        return this.httpsPort;
     }
 
     public String getIPAddress()
@@ -216,9 +220,9 @@ public class LovenseConnectDevice implements Runnable
         return this.hostname;
     }
 
-    private String getHTTPPath()
+    private String getHTTPSPath()
     {
-        return "https://" + this.getIPAddress() + ":" + String.valueOf(this.getHTTPPort()) + "/";
+        return "https://" + this.getIPAddress() + ":" + String.valueOf(this.getHTTPSPort()) + "/";
     }
 
     protected JSONObject getToyJSON(String toyId)
@@ -311,7 +315,7 @@ public class LovenseConnectDevice implements Runnable
             final_params.putAll(ltc.getParameters());
         }
         final_params.put("t", ltc.getToyId());
-        String url = this.getHTTPPath() + ltc.getCommand();
+        String url = this.getHTTPSPath() + ltc.getCommand();
         ltc.addAttempt();
         JSONObject response = LovenseConnect.apiCall(url, final_params);
         int response_code = 0;

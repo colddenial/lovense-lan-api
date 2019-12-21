@@ -3,6 +3,12 @@ package org.openstatic.lovense;
 import org.json.*;
 import java.util.Map;
 
+/**
+ *  This class represents a command waiting to be issued or already issued.
+ *  Each device has a thread dedicated to processing incoming commands.
+ * 
+ * **/
+
 public class LovenseToyCommand
 {
     private LovenseToy toy;
@@ -20,11 +26,13 @@ public class LovenseToyCommand
         this.responseCode = 0;
     }
     
-    public void addAttempt()
+    /** increment the number of times this command has been attempted **/
+    protected void addAttempt()
     {
         this.attempts++;
     }
     
+    /** How many times has this command been attempted? **/
     public int getAttempts()
     {
         return this.attempts;
@@ -40,26 +48,31 @@ public class LovenseToyCommand
         }
     }
     
+    /** get the associated toy's id **/
     public String getToyId()
     {
         return this.toy.getId();
     }
     
+    /** return the toy object associated with this command **/
     public LovenseToy getToy()
     {
         return this.toy;
     }
     
+    /** return the string command being passed to the LovenseConnectDevice **/
     public String getCommand()
     {
         return this.command;
     }
     
+    /** retrive a Map<String, String> of the parameters being passed to the LovenseConnectDevice **/
     public Map<String, String> getParameters()
     {
         return this.params;
     }
     
+    /** does this command pass any parameters **/
     public boolean hasParameters()
     {
         return this.params != null;
@@ -96,11 +109,13 @@ public class LovenseToyCommand
         this.responseCode = code;
     }
     
+    //** is this command done retrying or succesfully completed? **/
     public boolean isCompleted()
     {
         return this.responseCode > 0 || (!this.shouldRetry());
     }
     
+    /** did this command successfully complete? **/
     public boolean isSuccess()
     {
         return this.responseCode == 200;
@@ -124,6 +139,7 @@ public class LovenseToyCommand
         */
     }
 
+    /** Compare if two LovenseToyCommand objects are identical **/
     public boolean equals(LovenseToyCommand ltc)
     {
         if (ltc != null)
@@ -145,6 +161,7 @@ public class LovenseToyCommand
         }
     }
 
+    /** compare with another LovenseToyCommand to see if the toy and command being issued are the same **/
     public boolean commandEquals(LovenseToyCommand ltc)
     {
         if (ltc != null)

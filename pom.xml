@@ -72,6 +72,14 @@
             <version>3.0.1</version>
             <configuration>
             </configuration>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>javadoc</goal>
+                </goals>
+              </execution>
+            </executions>
        </plugin>
     </plugins>
   </build>

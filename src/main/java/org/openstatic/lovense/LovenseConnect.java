@@ -24,6 +24,12 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.IOException;
 
+/** This is the main class for interacting with the Library
+ *  Note: Most methods are static since there is no reason to instantiate this class
+ *  
+ * 
+ * **/
+
 public class LovenseConnect
 {
     protected static boolean debug = false;
@@ -36,6 +42,7 @@ public class LovenseConnect
     private static Vector<LovenseConnectListener> listeners = new Vector<LovenseConnectListener>();
     private static Thread refreshThread;
 
+    /* adds a LovenseConnectListener to the library for internal events */
     public static void addLovenseConnectListener(LovenseConnectListener lcl)
     {
         if (!LovenseConnect.listeners.contains(lcl))
@@ -52,12 +59,14 @@ public class LovenseConnect
         }
     }
 
+    /* return a Collection of all detected LovenseConnectDevices found on the network */
     public static Collection<LovenseConnectDevice> getDevices() throws LovenseException
     {
         refreshIfNeeded();
         return LovenseConnect.devices.values();
     }
 
+    /* call refresh() if there hasn't been a refresh in over 20 seconds */
     public static void refreshIfNeeded()
     {
         if ( ((System.currentTimeMillis() - LovenseConnect.lastToyFetch) > 20000) && LovenseConnect.refreshThread == null)
@@ -79,6 +88,7 @@ public class LovenseConnect
         }
     }
     
+    /** Enter the ip address and https port of a lovenseConnect app manually **/
     public static void addDeviceManually(String ip, int port)
     {
         String deviceId = ip + ":" + String.valueOf(port);
@@ -127,6 +137,7 @@ public class LovenseConnect
         }
     }
 
+    /** Contact lovense servers to look for local devices and refresh the status of connected devices **/
     public static void refresh() throws LovenseException
     {
         if (LovenseConnect.debug)
@@ -199,6 +210,7 @@ public class LovenseConnect
         }
     }
 
+    /* Retrieves a collection of all the lovense toys detected by the library, will also call refreshIfNeeded() */
     public static Collection<LovenseToy> getToys() throws LovenseException
     {
         LovenseConnect.refreshIfNeeded();
@@ -254,15 +266,10 @@ public class LovenseConnect
         return "";
     }
     
+    /** Retrieve the Library's internal index for a particular toy **/
     public static int toyIndex(LovenseToy toy)
     {
         return LovenseConnect.toys.indexOf(toy);
-    }
-
-        /** Make an API call to the selected product **/
-    protected static JSONObject apiCall(String path) throws LovenseException
-    {
-        return apiCall(path, null);
     }
 
     /** Read the contents of an InputStream into a String **/
@@ -288,9 +295,11 @@ public class LovenseConnect
         }
     }
 
-    /** Make an API call to the selected product
-     * NOTE: This is the master method when talking to the BSD api
-     * all other api calls should eventually lead here **/
+    protected static JSONObject apiCall(String path) throws LovenseException
+    {
+        return apiCall(path, null);
+    }
+
     protected static JSONObject apiCall(String api_url, Map<String, String> params) throws LovenseException
     {
 

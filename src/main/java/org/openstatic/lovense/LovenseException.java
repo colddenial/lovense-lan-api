@@ -8,7 +8,6 @@ public class LovenseException extends Exception
     String apiPath;
     JSONObject data;
 
-    /** Should only be constructed by classes in net.bsdtelecom **/
     protected LovenseException(String error, String apiPath, JSONObject data)
     {
       super(error);

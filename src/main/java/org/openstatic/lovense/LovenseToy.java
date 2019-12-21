@@ -28,11 +28,13 @@ public class LovenseToy
         this.battery = 0;
     }
 
+    /** get the associated LovenseConnectDevice this toy is connected to **/
     public LovenseConnectDevice getDevice()
     {
         return this.device;
     }
     
+    /** adds a listener for toy state change events **/
     public void addLovenseToyListener(LovenseToyListener ltl)
     {
         if (!this.listeners.contains(ltl))
@@ -93,31 +95,37 @@ public class LovenseToy
             return nickname;
     }
 
+    /** Is the toy currently connected? **/
     public boolean isConnected()
     {
         return this.connected;
     }
 
+    /** Retrieves the last know battery level 0-100 **/
     public int getBattery()
     {
         return this.battery;
     }
 
+    /** Issues the vibrate command to the toy **/
     public LovenseToyCommand vibrate(int amount)
     {
         return this.device.command(this, "Vibrate", amount);
     }
 
+    /** Issues the vibrate1 command to the toy, used with edge **/
     public LovenseToyCommand vibrate1(int amount)
     {
         return this.device.command(this, "Vibrate1", amount);
     }
 
+    /** Issues the vibrate2 command to the toy, used with edge **/
     public LovenseToyCommand vibrate2(int amount)
     {
         return this.device.command(this, "Vibrate2", amount);
     }
 
+    /** Issues the rotate command to the toy **/
     public LovenseToyCommand rotate(int amount)
     {
         return this.device.command(this, "Rotate", amount);
@@ -163,6 +171,7 @@ public class LovenseToy
         return this.device.command(this, "Preset", presetId);
     }
 
+    /** Return a string representation of this toy **/
     public String toString()
     {
         if (this.nickname == null)
