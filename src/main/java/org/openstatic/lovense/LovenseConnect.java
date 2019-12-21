@@ -66,7 +66,7 @@ public class LovenseConnect
         return LovenseConnect.devices.values();
     }
 
-    /* call refresh() if there hasn't been a refresh in over 20 seconds */
+    /* Launch a Thread to call refresh() if there hasn't been a refresh in over 20 seconds */
     public static void refreshIfNeeded()
     {
         if ( ((System.currentTimeMillis() - LovenseConnect.lastToyFetch) > 20000) && LovenseConnect.refreshThread == null)

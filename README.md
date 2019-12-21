@@ -1,15 +1,22 @@
 # Lovense LAN Library #
+![](https://raw.githubusercontent.com/colddenial/lovense-lan-api/master/res/ambi.png)![](https://raw.githubusercontent.com/colddenial/lovense-lan-api/master/res/domi.png)![](https://raw.githubusercontent.com/colddenial/lovense-lan-api/master/res/edge.png)![](https://raw.githubusercontent.com/colddenial/lovense-lan-api/master/res/hush.png)![](https://raw.githubusercontent.com/colddenial/lovense-lan-api/master/res/lush.png)![](https://raw.githubusercontent.com/colddenial/lovense-lan-api/master/res/max.png)![](https://raw.githubusercontent.com/colddenial/lovense-lan-api/master/res/osci.png)![](https://raw.githubusercontent.com/colddenial/lovense-lan-api/master/res/nora.png)
 
-This library provides a simple interface to control lovense toys using lovense connect.
+This library provides a simple java interface to control lovense toys using lovense connect.
 
-Example
+Example using getToys()
 
 ```java
 public class Test
 {
 	public static void main(String[] args)
 	{
+		//Trigger an immediate toy search and block until complete
+		LovenseConnect.refresh();
+
+		//Fetch a collection of all toys found on the local network
 		Collection<LovenseToy> toys = LovenseConnect.getToys();
+
+		// Cycle through each toy displaying its stats and setting the vibration to 50%
 		Iterator<LovenseToy> toyIterator = toys.iterator();
 		while(toyIterator.hasNext())
 		{
@@ -25,7 +32,7 @@ public class Test
 }
 ```
 
-Every call to getToys() also runs LovenseConnect.refreshIfNeeded() this will look for new devices using lovense's getToys API. 
+Every call to getToys() also calls LovenseConnect.refreshIfNeeded() this will launch a thread to look for new devices using lovense's getToys API. 
 
 
 
