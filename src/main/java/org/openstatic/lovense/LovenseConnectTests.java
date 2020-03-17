@@ -9,6 +9,7 @@ public class LovenseConnectTests
 {
     public static void main(String[] args) throws LovenseException, InterruptedException
     {
+        //System.setProperty("javax.net.debug","SSL,handshake,data");
         String test_name = args[0].toLowerCase();
         // Setup the client to the correct product and turn debug on
         LovenseConnect.setDebug(true);
@@ -32,7 +33,7 @@ public class LovenseConnectTests
             }
 
         });
-        LovenseConnect.addDeviceManually("127.0.0.1",30110);
+        LovenseConnect.addDeviceManually("127.0.0.1",30010);
         while (true)
         {
             Collection<LovenseToy> toys = LovenseConnect.getToys();

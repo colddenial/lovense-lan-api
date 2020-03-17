@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.URLEncoder;
 import java.net.URLDecoder;
 import java.net.URL;
+import java.net.Proxy;
 import java.net.HttpURLConnection;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.HostnameVerifier;
@@ -13,6 +14,8 @@ import javax.net.ssl.SSLSession;
 import java.util.Vector;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.List;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -108,7 +111,7 @@ public class LovenseConnect
     {
         try
         {
-            JSONObject resp = LovenseConnect.apiCall("https://api.lovense.com/api/lan/getToys");
+            JSONObject resp = LovenseConnect.apiCall("https://api.lovense.com/api/lan/getToys?rnd=" + String.valueOf(System.currentTimeMillis()));
             Iterator<String> keys = resp.keys();
             while(keys.hasNext())
             {
@@ -300,9 +303,25 @@ public class LovenseConnect
         return apiCall(path, null);
     }
 
+    protected static void showHeaders(HttpsURLConnection con)
+    {
+        String headerName = null;
+        for (int i = 1; (headerName = con.getHeaderFieldKey(i)) != null; i++)
+        {
+            if (headerName.equals("Set-Cookie"))
+            {
+              String cookie = con.getHeaderField(i);
+              System.out.println("(Response) Cookie  ::  " + cookie);
+            } else {
+              System.out.println("(Response) Header: "+ con.getHeaderField(i));
+            }
+        }
+    }
+
     protected static JSONObject apiCall(String api_url, Map<String, String> params) throws LovenseException
     {
-
+        System.setProperty("http.keepAlive", "false");
+        System.setProperty("java.net.preferIPv6Addresses", "true");
         JSONObject ro = new JSONObject();
         try
         {
@@ -314,18 +333,48 @@ public class LovenseConnect
             }
             String return_data = "";
             URL url_object = new URL(url);
-            HttpsURLConnection con = (HttpsURLConnection) url_object.openConnection();
+            HttpsURLConnection con = (HttpsURLConnection) url_object.openConnection(Proxy.NO_PROXY);
+            if (!url.contains("api.lovense.com"))
+            {
+                if (LovenseConnect.debug)
+                    System.err.println("Removing Trust! - " + url);
+                try
+                {
+                    TrustModifier.relaxHostChecking(con);
+                } catch (Exception rhce) {
+                    rhce.printStackTrace(System.err);
+                }
+            }
             con.setConnectTimeout(3000);
             con.setReadTimeout(3000);
             con.setRequestMethod("GET");
-            con.setHostnameVerifier(new HostnameVerifier() {
-                @Override
-                public boolean verify(String hostname, SSLSession sslSession) {
-                    return true;
+            con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36");
+            con.setRequestProperty("Accept", "text/html");
+            con.setRequestProperty("Cache-Control", "no-cache");
+            con.setRequestProperty("Pragma", "no-cache");
+            //con.setRequestProperty("Accept-Encoding", "gzip,deflate,br");
+            //con.setRequestProperty("Accept-Language", "en-US,en;q=0.9");
+            //con.setRequestProperty("Upgrade-Insecure-Requests", "1");
+            con.setInstanceFollowRedirects(true);
+            con.setDefaultUseCaches(false);
+            con.setUseCaches(false);
+            con.setDoOutput(false);
+            con.setDoInput(true);
+            if (LovenseConnect.debug)
+            {
+                for (Map.Entry<String, List<String>> entries : con.getRequestProperties().entrySet())
+                {    
+                    String values = "";
+                    for (String value : entries.getValue())
+                    {
+                        values += value + ",";
+                    }
+                    System.err.println("(Request) Header: " + entries.getKey() + " - " +  values );
                 }
-            });
-            con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36");
+            }
             con.connect();
+            if (LovenseConnect.debug)
+                showHeaders(con);
             int response_code = con.getResponseCode();
             if (response_code == 200)
             {
