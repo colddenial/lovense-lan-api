@@ -49,10 +49,10 @@ public class LovenseConnectTests
                 if (nextToy.isConnected())
                 {
                     System.err.println("  Toy IS connected");
-                    nextToy.vibrate(1);
+                    //nextToy.vibrate(1);
                     Thread.sleep(2000);
-                    nextToy.vibrate(0);
-                    nextToy.rotate(10);
+                    //nextToy.vibrate(0);
+                    //nextToy.rotate(10);
                 } else {
                     System.err.println("  Toy NOT connected");
                 }

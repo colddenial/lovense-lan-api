@@ -219,10 +219,15 @@ public class LovenseConnectDevice implements Runnable
     {
         return this.hostname;
     }
+    
+    public String getHostPort()
+    {
+        return this.getIPAddress() + ":" + String.valueOf(this.getHTTPSPort());
+    }
 
     private String getHTTPSPath()
     {
-        return "https://" + this.getIPAddress() + ":" + String.valueOf(this.getHTTPSPort()) + "/";
+        return "https://" + this.getHostPort() +  "/";
     }
 
     protected JSONObject getToyJSON(String toyId)

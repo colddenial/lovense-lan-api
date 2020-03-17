@@ -20,7 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.Enumeration;
-
+import java.util.StringTokenizer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -59,6 +59,38 @@ public class LovenseConnect
         if (LovenseConnect.listeners.contains(lcl))
         {
             LovenseConnect.listeners.remove(lcl);
+        }
+    }
+
+    public static JSONArray getDevicesAsJSONArray()
+    {
+        JSONArray ra = new JSONArray();
+        Iterator<LovenseConnectDevice> manDevIt = LovenseConnect.devices.values().iterator();
+        while(manDevIt.hasNext())
+        {
+            LovenseConnectDevice ld = manDevIt.next();
+            ra.put(ld.getHostPort());
+        }
+        return ra;
+    }
+    
+    public static void addDevicesFromJSONArray(JSONArray ja)
+    {
+        for(int i = 0; i < ja.length(); i++)
+        {
+            String ip_port = ja.getString(i);
+            try
+            {
+                StringTokenizer st = new StringTokenizer(ip_port,":");
+                String ip = st.nextToken();
+                if (st.hasMoreTokens())
+                {
+                    int port = Integer.valueOf(st.nextToken());
+                    LovenseConnect.addDeviceManually(ip, port);
+                }
+            } catch (Exception e) {
+                e.printStackTrace(System.err);
+            }
         }
     }
 
@@ -320,7 +352,6 @@ public class LovenseConnect
 
     protected static JSONObject apiCall(String api_url, Map<String, String> params) throws LovenseException
     {
-        System.setProperty("http.keepAlive", "false");
         System.setProperty("java.net.preferIPv6Addresses", "true");
         JSONObject ro = new JSONObject();
         try
@@ -337,7 +368,7 @@ public class LovenseConnect
             if (!url.contains("api.lovense.com"))
             {
                 if (LovenseConnect.debug)
-                    System.err.println("Removing Trust! - " + url);
+                    System.err.println("Removing Trust Restrictions! - " + url);
                 try
                 {
                     TrustModifier.relaxHostChecking(con);
