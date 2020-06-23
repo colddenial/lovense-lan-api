@@ -12,6 +12,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 
 import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -39,7 +40,8 @@ public class LovenseConnect
     private static String VERSION = "";
 
     private static LinkedHashMap<String, LovenseConnectDevice> devices = new LinkedHashMap<String, LovenseConnectDevice>();
-    private static Vector<LovenseToy> toys = new Vector<LovenseToy>();
+    private static LinkedHashMap<String, LovenseToy> toys = new LinkedHashMap<String, LovenseToy>();
+    private static ArrayList<String> toyOrder = new ArrayList<String>();
 
     private static long lastToyFetch = 0;
     private static Vector<LovenseConnectListener> listeners = new Vector<LovenseConnectListener>();
@@ -173,7 +175,7 @@ public class LovenseConnect
     }
 
     /** Contact lovense servers to look for local devices and refresh the status of connected devices **/
-    public static void refresh() throws LovenseException
+    public static synchronized void refresh() throws LovenseException
     {
         if (LovenseConnect.debug)
             System.err.println("Lovense Refresh Called");
@@ -192,24 +194,27 @@ public class LovenseConnect
         for(Iterator<LovenseToy> updatedToysIterator = updatedToys.iterator(); updatedToysIterator.hasNext();)
         {
             LovenseToy t = updatedToysIterator.next();
-            if (!LovenseConnect.toys.contains(t))
+            String toyIdLower = t.getId().toLowerCase();
+            if (!LovenseConnect.toys.containsKey(toyIdLower))
             {
-                LovenseConnect.toys.add(t);
-                fireToyAdded(LovenseConnect.toys.indexOf(t), t);
+                LovenseConnect.toyOrder.add(toyIdLower);
+                LovenseConnect.toys.put(toyIdLower, t);
+                fireToyAdded(LovenseConnect.toyOrder.indexOf(toyIdLower), t);
             }
         }
 
         // check for toys removed
-        for(Iterator<LovenseToy> oldToysIterator = LovenseConnect.toys.iterator(); oldToysIterator.hasNext();)
+        int idxPos = 0;
+        for(Iterator<LovenseToy> oldToysIterator = LovenseConnect.toys.values().iterator(); oldToysIterator.hasNext();)
         {
             LovenseToy t = oldToysIterator.next();
             if (!updatedToys.contains(t))
             {
-                int idx = LovenseConnect.toys.indexOf(t);
-                fireToyRemoved(idx, t);
+                LovenseConnect.toys.remove(t.getId().toLowerCase());
+                fireToyRemoved(idxPos, t);
             }
+            idxPos++;
         }
-        LovenseConnect.toys = updatedToys;
         LovenseConnect.lastToyFetch = System.currentTimeMillis();
     }
 
@@ -249,30 +254,15 @@ public class LovenseConnect
     public static Collection<LovenseToy> getToys() throws LovenseException
     {
         LovenseConnect.refreshIfNeeded();
-        return LovenseConnect.toys;
+        return LovenseConnect.toys.values();
     }
 
     public static LovenseToy getToyById(String toyId) throws LovenseException
     {
-        for(Iterator<LovenseToy> toys = getToys().iterator(); toys.hasNext();)
-        {
-            LovenseToy t = toys.next();
-            if (t.getId().equalsIgnoreCase(toyId) && t.isConnected())
-            {
-                System.err.println("Return connected toy: " + t.toString());
-                return t;
-            }
-        }
-        for(Iterator<LovenseToy> toys = getToys().iterator(); toys.hasNext();)
-        {
-            LovenseToy t = toys.next();
-            if (t.getId().equalsIgnoreCase(toyId))
-            {
-                System.err.println("Return matching toy: " + t.toString());
-                return t;
-            }
-        }
-        return null;
+        if (toyId != null)
+            return LovenseConnect.toys.get(toyId.toLowerCase());
+        else
+            return null;
     }
 
     /** Convert a Map Object into a query string **/
@@ -304,7 +294,10 @@ public class LovenseConnect
     /** Retrieve the Library's internal index for a particular toy **/
     public static int toyIndex(LovenseToy toy)
     {
-        return LovenseConnect.toys.indexOf(toy);
+        if (toy != null)
+            return LovenseConnect.toyOrder.indexOf(toy.getId().toLowerCase());
+        else
+            return -1;
     }
 
     /** Read the contents of an InputStream into a String **/
