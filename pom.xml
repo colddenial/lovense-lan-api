@@ -13,7 +13,13 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
-
+  <distributionManagement>
+   <repository>
+     <id>github-colddenial</id>
+     <name>GitHub OWNER Apache Maven Packages</name>
+     <url>https://maven.pkg.github.com/colddenial/lovense-lan-api</url>
+   </repository>
+  </distributionManagement>
   <dependencies>
     <dependency>
         <groupId>org.json</groupId>
