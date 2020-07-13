@@ -12,6 +12,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 
 import java.util.Vector;
+import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -66,13 +67,7 @@ public class LovenseConnect
 
     public static JSONArray getDevicesAsJSONArray()
     {
-        JSONArray ra = new JSONArray();
-        Iterator<LovenseConnectDevice> manDevIt = LovenseConnect.devices.values().iterator();
-        while(manDevIt.hasNext())
-        {
-            LovenseConnectDevice ld = manDevIt.next();
-            ra.put(ld.getHostPort());
-        }
+        JSONArray ra = new JSONArray(LovenseConnect.devices.values().stream().map((ld)-> { return ld.getHostPort(); }).distinct().collect(Collectors.toList()));
         return ra;
     }
     

@@ -63,6 +63,7 @@ public class LovenseConnectTests
             System.err.println("Waiting 4 Seconds...");
             Thread.sleep(4000);
             System.err.println("");
+            System.err.println(LovenseConnect.getDevicesAsJSONArray().toString());
         }
     }
 }
