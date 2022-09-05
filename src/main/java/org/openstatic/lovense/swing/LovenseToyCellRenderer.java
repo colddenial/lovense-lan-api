@@ -27,6 +27,7 @@ public class LovenseToyCellRenderer extends JPanel implements ListCellRenderer<L
    private Border border;
    private JLabel toyLabel;
    private JPanel vibratePanel;
+   private JPanel batteryPanel;
    private JProgressBar vibrate1Bar;
    private JProgressBar vibrate2Bar;
    private JProgressBar batteryBar;
@@ -59,14 +60,18 @@ public class LovenseToyCellRenderer extends JPanel implements ListCellRenderer<L
       this.vibratePanel.add(this.vibrate1Bar);
       this.vibratePanel.add(this.vibrate2Bar);
       
+      this.batteryPanel = new JPanel(new GridLayout(1,1,0,0));
+      this.batteryPanel.setBorder(new TitledBorder("Battery"));
+      this.batteryPanel.setOpaque(false);
+
       this.batteryBar = new JProgressBar(0,100);
       this.batteryBar.setStringPainted(true);
-      this.batteryBar.setBorder(new TitledBorder("Battery"));
       this.batteryBar.setOpaque(false);
+      this.batteryPanel.add(this.batteryBar);
 
       this.add(this.toyLabel, BorderLayout.WEST);
       this.add(this.vibratePanel, BorderLayout.CENTER);
-      this.add(this.batteryBar, BorderLayout.EAST);
+      this.add(this.batteryPanel, BorderLayout.EAST);
 
    }
 
@@ -120,19 +125,9 @@ public class LovenseToyCellRenderer extends JPanel implements ListCellRenderer<L
 
         int batt = toy.getBattery();
         if (batt >= 0)
-        batteryBar.setValue(batt);
+          batteryBar.setValue(batt);
         else
-        batteryBar.setValue(0);
-
-
-        if (isSelected)
-        {
-          this.setBackground(list.getSelectionBackground());
-          this.setForeground(list.getSelectionForeground());
-        } else {
-          this.setBackground(list.getBackground());
-          this.setForeground(list.getForeground());
-        }
+          batteryBar.setValue(0);
 
         this.setFont(list.getFont());
         this.setEnabled(list.isEnabled());
