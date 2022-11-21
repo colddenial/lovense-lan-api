@@ -1,5 +1,4 @@
 # Lovense LAN Library #
-![](https://raw.githubusercontent.com/colddenial/lovense-lan-api/master/res/ambi.png)![](https://raw.githubusercontent.com/colddenial/lovense-lan-api/master/res/domi.png)![](https://raw.githubusercontent.com/colddenial/lovense-lan-api/master/res/edge.png)![](https://raw.githubusercontent.com/colddenial/lovense-lan-api/master/res/hush.png)![](https://raw.githubusercontent.com/colddenial/lovense-lan-api/master/res/lush.png)![](https://raw.githubusercontent.com/colddenial/lovense-lan-api/master/res/max.png)![](https://raw.githubusercontent.com/colddenial/lovense-lan-api/master/res/osci.png)![](https://raw.githubusercontent.com/colddenial/lovense-lan-api/master/res/nora.png)
 
 This library provides a simple java interface to control lovense toys using lovense connect.
 
