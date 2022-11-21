@@ -34,8 +34,6 @@ public class Test
 Every call to getToys() also calls LovenseConnect.refreshIfNeeded() this will launch a thread to look for new devices using lovense's getToys API. 
 
 
-
-
 >Copyright (C) 2019  colddenial / openstatic.org
 
 >This program is free software: you can redistribute it and/or modify

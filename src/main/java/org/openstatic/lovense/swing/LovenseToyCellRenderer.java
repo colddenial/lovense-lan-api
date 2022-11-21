@@ -43,7 +43,7 @@ public class LovenseToyCellRenderer extends JPanel implements ListCellRenderer<L
       this.setOpaque(false);
 
       this.toyLabel = new JLabel();
-      Dimension toyLabelSize = new Dimension(256, 64);
+      Dimension toyLabelSize = new Dimension(200, 64);
       this.toyLabel.setMinimumSize(toyLabelSize);
       this.toyLabel.setSize(toyLabelSize);
       this.toyLabel.setPreferredSize(toyLabelSize);
