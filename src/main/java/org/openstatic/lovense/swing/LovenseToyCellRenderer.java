@@ -11,6 +11,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.border.TitledBorder;
+import java.awt.Dimension;
 import java.awt.image.AffineTransformOp;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -42,6 +43,10 @@ public class LovenseToyCellRenderer extends JPanel implements ListCellRenderer<L
       this.setOpaque(false);
 
       this.toyLabel = new JLabel();
+      Dimension toyLabelSize = new Dimension(256, 64);
+      this.toyLabel.setMinimumSize(toyLabelSize);
+      this.toyLabel.setSize(toyLabelSize);
+      this.toyLabel.setPreferredSize(toyLabelSize);
       
       this.vibratePanel = new JPanel(new GridLayout(2,1,0,0));
       this.vibratePanel.setBorder(new TitledBorder("Vibrate"));
@@ -77,16 +82,25 @@ public class LovenseToyCellRenderer extends JPanel implements ListCellRenderer<L
 
     public BufferedImage getIconForToy(String toy_name)
     {
-        if (!this.icon_cache.containsKey(toy_name))
+      toy_name = toy_name.toLowerCase();
+      if (toy_name.contains("lush"))
+        toy_name = "lush";
+      if (toy_name.contains("hush"))
+        toy_name = "hush";
+        if (toy_name.contains("domi"))
+        toy_name = "domi";
+      if (!this.icon_cache.containsKey(toy_name))
+      {
+        try
         {
-          try
-          {
-              BufferedImage res_icon = ImageIO.read(getClass().getResource("/lovense-res/" + toy_name + ".png"));
-              BufferedImage bi = resizeImage(64, res_icon);
-              this.icon_cache.put(toy_name, bi);
-          } catch (Exception e) {}
+            BufferedImage res_icon = ImageIO.read(getClass().getResource("/lovense-res/" + toy_name + ".png"));
+            BufferedImage bi = resizeImage(64, res_icon);
+            this.icon_cache.put(toy_name, bi);
+        } catch (Exception e) {
+          return getIconForToy("icon-64");
         }
-        return this.icon_cache.get(toy_name);
+      }
+      return this.icon_cache.get(toy_name);
     }
 
     @Override
