@@ -111,7 +111,10 @@ public class LovenseToyCellRenderer extends JPanel implements ListCellRenderer<L
                                                  boolean cellHasFocus)
     {
         //System.err.println("Rendering - " + toy.toString());
-        this.toyLabel.setText("<html><body><b>" + toy.toString() + "</b><br />" + toy.getDevice().getHostname() + "<br />" + (toy.isConnected() ? "<font color=\"green\">Connected</font>" : "<font color=\"red\">Disconnected</font>") + "</body></html>");
+        String toyTagText = "";
+        if (!"".equals(toy.getTag()))
+          toyTagText = toy.getTag() + " ";
+        this.toyLabel.setText("<html><body><b>" + toy.toString() + "</b><br />" + toy.getDevice().getHostname() + "<br />" + toyTagText + (toy.isConnected() ? "<font color=\"green\">Connected</font>" : "<font color=\"red\">Disconnected</font>") + "</body></html>");
         try
         {
           ImageIcon icon = new ImageIcon(this.getIconForToy(toy.getName()));

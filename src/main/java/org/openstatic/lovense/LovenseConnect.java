@@ -260,6 +260,21 @@ public class LovenseConnect
             return null;
     }
 
+    public static LovenseToy getToyByTag(String toyTag) throws LovenseException
+    {
+        if (toyTag != null)
+        {
+            Iterator<LovenseToy> toyIterator = LovenseConnect.toys.values().iterator();
+            while(toyIterator.hasNext())
+            {
+                LovenseToy toy = toyIterator.next();
+                if (toyTag.equals(toy.getTag()))
+                    return toy;
+            }
+        }
+        return null;
+    }
+
     /** Convert a Map Object into a query string **/
     protected static String mapToQuery(Map<String, String> table)
     {

@@ -17,7 +17,7 @@ public class LovenseToy
     protected int battery;
     protected boolean connected;
     private Vector<LovenseToyListener> listeners;
-
+    private String toyTag;
 
     protected LovenseToy(LovenseConnectDevice d, String toy_id)
     {
@@ -26,6 +26,7 @@ public class LovenseToy
         this.device = d;
         this.connected = false;
         this.battery = 0;
+        this.toyTag = "";
     }
 
     /** get the associated LovenseConnectDevice this toy is connected to **/
@@ -85,6 +86,16 @@ public class LovenseToy
     public String getName()
     {
         return this.name;
+    }
+
+    public String getTag()
+    {
+        return this.toyTag;
+    }
+
+    public void setTag(String tag)
+    {
+        this.toyTag = tag;
     }
 
     public String getNickname()
